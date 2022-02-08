@@ -40,18 +40,28 @@ char	*ft_fdline(char *rest, int fd)
 
 char	*ft_fdover(char *rest, ssize_t size)
 {
-	ssize_t	end;
 	char	*tmp;
+	ssize_t	end;
 
 	end = 0;
-	while (rest[end + size])
-		end++;
-	tmp = ft_strndup(rest + size, end);
+	if (!rest[size])
+	{
+		free(rest);
+		return (0);
+	}
+	end = ft_strlen(&rest[size + 1]);
+	tmp = malloc(sizeof(char) * (end + 1));
 	if (!tmp)
 		return (0);
+	end = 0;
+	while (rest[size + end + 1])
+	{
+		tmp[end] = rest[size + end + 1];
+		end++;
+	}
+	tmp[end] = '\0';
 	free(rest);
-	rest = tmp;
-	return (rest);
+	return (tmp);
 }
 
 char	*get_next_line(int fd)
@@ -76,31 +86,31 @@ char	*get_next_line(int fd)
 	dst = ft_strndup(rest, size + 1);
 	if (!dst)
 		return (0);
-	rest = ft_fdover(rest, size + 1);
+	rest = ft_fdover(rest, size);
 	return (dst);
 }
 
-// #include <stdio.h>
-// #include <fcntl.h>
-// int	main(void)
-// {
-// 	char	*ret;
-// 	int		fd;
-// 	size_t	i;
+#include <stdio.h>
+#include <fcntl.h>
+int	main(void)
+{
+	char	*ret;
+	int		fd;
+	size_t	i;
 
-// 	fd = open("test.txt", O_RDONLY);
-// 	if (fd < 0)
-// 	{
-// 		printf("OPEN ERROR\n");
-// 		return (0);
-// 	}
-// 	i = 0;
-// 	while (i < 10)
-// 	{
-// 		ret = get_next_line(fd);
-// 		printf("Str[%i]: %s", i, ret);
-// 		free(ret);
-// 		++i;
-// 	}
-// 	return (0);
-// }
+	fd = open("test.txt", O_RDONLY);
+	if (fd < 0)
+	{
+		printf("OPEN ERROR\n");
+		return (0);
+	}
+	i = 0;
+	while (i < 2)
+	{
+		ret = get_next_line(fd);
+		printf("Str[%i]: %s", i, ret);
+		free(ret);
+		++i;
+	}
+	return (0);
+}
