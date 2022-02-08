@@ -22,7 +22,7 @@ char	*ft_fdline(char *rest, int fd)
 	while (!ft_strchr(rest, '\n') && r_bytes > 0)
 	{
 		r_bytes = read(fd, buf, BUFFER_SIZE);
-		if (r_bytes <= 0)
+		if (r_bytes < 0)
 			return (0);
 		if (!rest)
 		{
@@ -32,13 +32,15 @@ char	*ft_fdline(char *rest, int fd)
 			rest[0] = '\0';
 		}
 		rest = ft_strnjoin(rest, buf, r_bytes);
+		if (!rest)
+			return (0);
 	}
 	return (rest);
 }
 
-char	*ft_fdover(char *rest, int size)
+char	*ft_fdover(char *rest, ssize_t size)
 {
-	int		end;
+	ssize_t	end;
 	char	*tmp;
 
 	end = 0;
@@ -48,37 +50,33 @@ char	*ft_fdover(char *rest, int size)
 	if (!tmp)
 		return (0);
 	free(rest);
-	rest = ft_strndup(tmp, end);
-	if (!rest)
-		return (0);
-	free(tmp);
+	rest = tmp;
 	return (rest);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*rest;
-	char		*dst;
-	int			size;
+	static char		*rest;
+	char			*dst;
+	ssize_t			size;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (0);
 	size = 0;
 	rest = ft_fdline(rest, fd);
-	if (0 == rest)
+	if (!rest)
 		return (0);
 	while (rest[size] && rest[size] != '\n')
 		size++;
-	if (size == 0)
+	if (rest[0] == '\0')
 	{
-		if (1)
-			free(rest);
+		free(rest);
 		return (0);
 	}
 	dst = ft_strndup(rest, size + 1);
 	if (!dst)
 		return (0);
-	rest = ft_fdover(rest, size);
+	rest = ft_fdover(rest, size + 1);
 	return (dst);
 }
 
@@ -97,10 +95,10 @@ char	*get_next_line(int fd)
 // 		return (0);
 // 	}
 // 	i = 0;
-// 	while (i < 2)
+// 	while (i < 10)
 // 	{
 // 		ret = get_next_line(fd);
-// 		printf("Str: %s\n", ret);
+// 		printf("Str[%i]: %s", i, ret);
 // 		free(ret);
 // 		++i;
 // 	}
