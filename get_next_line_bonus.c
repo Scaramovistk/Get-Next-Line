@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gscarama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <stdio.h>
 
 char	*ft_fdline(char *rest, int fd)
@@ -66,21 +66,21 @@ char	*ft_fdover(char *rest, ssize_t size)
 
 char	*get_next_line(int fd)
 {
-	static char	*rest;
+	static char	*rest[10240];
 	char		*dst;
 	ssize_t		size;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 10240)
 		return (0);
 	size = 0;
-	rest = ft_fdline(rest, fd);
-	if (!rest)
+	rest[fd] = ft_fdline(rest[fd], fd);
+	if (!rest[fd])
 		return (0);
-	while (rest[size] && rest[size] != '\n')
+	while (rest[fd][size] && rest[fd][size] != '\n')
 		size++;
-	dst = ft_strndup(rest, size + 1);
+	dst = ft_strndup(rest[fd], size + 1);
 	if (!dst)
 		return (0);
-	rest = ft_fdover(rest, size);
+	rest[fd] = ft_fdover(rest[fd], size);
 	return (dst);
 }
