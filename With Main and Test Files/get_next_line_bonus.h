@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
-# define GET_NEXT_LINE__BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <string.h>
 # include <unistd.h>

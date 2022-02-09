@@ -91,7 +91,7 @@ char	*get_next_line(int fd)
 // {
 // 	char	*ret;
 // 	int		fd;
-// 	size_t	i;
+// 	int		i;
 
 // 	fd = open("test1.txt", O_RDONLY);
 // 	if (fd < 0)
