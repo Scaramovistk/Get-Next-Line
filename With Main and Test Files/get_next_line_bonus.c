@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <stdio.h>
 
 char	*ft_fdline(char *rest, int fd)
@@ -131,4 +131,4 @@ char	*get_next_line(int fd)
 // 	close(fd4);
 // 	close(fd5);
 // 	return (0);
-}
+//}
