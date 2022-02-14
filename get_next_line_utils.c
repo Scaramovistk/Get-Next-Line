@@ -6,7 +6,7 @@
 /*   By: gscarama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 20:13:42 by gscarama          #+#    #+#             */
-/*   Updated: 2022/02/09 08:29:45 by gscarama         ###   ########.fr       */
+/*   Updated: 2022/02/14 08:29:45 by gscarama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,7 @@ char	*ft_strndup(char *src, size_t size)
 
 	i = 0;
 	if (!src[0])
-	{
-		free(src);
-		return (NULL);
-	}
+		return (0);
 	dest = malloc(sizeof(char) * size + 1);
 	if (dest == NULL)
 		return (NULL);
