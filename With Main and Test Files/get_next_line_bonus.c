@@ -1,88 +1,129 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gscarama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 20:13:42 by gscarama          #+#    #+#             */
-/*   Updated: 2022/02/09 08:29:45 by gscarama         ###   ########.fr       */
+/*   Updated: 2022/02/14 08:29:45 by gscarama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-#include <stdio.h>
 
-char	*ft_fdline(char *rest, int fd)
+size_t	ft_strlen(const char *str)
 {
-	char	buf[BUFFER_SIZE];
-	ssize_t	r_bytes;
+	size_t	size;
 
-	r_bytes = 1;
-	while (!ft_strchr(rest, '\n') && r_bytes > 0)
-	{
-		r_bytes = read(fd, buf, BUFFER_SIZE);
-		if (r_bytes < 0)
-			return (0);
-		if (!rest && r_bytes > 0)
-		{
-			rest = malloc(sizeof(char) * 1);
-			if (!rest)
-				return (0);
-			rest[0] = '\0';
-		}
-		rest = ft_strnjoin(rest, buf, r_bytes);
-		if (!rest)
-			return (0);
-	}
-	return (rest);
-}
-
-char	*ft_fdover(char *rest, ssize_t size)
-{
-	char	*tmp;
-	ssize_t	end;
-
-	end = 0;
-	if (!rest[size])
-	{
-		free(rest);
-		return (0);
-	}
-	end = ft_strlen(&rest[size + 1]);
-	tmp = malloc(sizeof(char) * (end + 1));
-	if (!tmp)
-		return (0);
-	end = 0;
-	while (rest[size + end + 1])
-	{
-		tmp[end] = rest[size + end + 1];
-		end++;
-	}
-	tmp[end] = '\0';
-	free(rest);
-	return (tmp);
-}
-
-char	*get_next_line(int fd)
-{
-	static char		*rest[10240];
-	char			*dst;
-	ssize_t			size;
-
-	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 10240)
-		return (0);
 	size = 0;
-	rest[fd] = ft_fdline(rest[fd], fd);
-	if (!rest[fd])
+	if (!str)
 		return (0);
-	while (rest[fd][size] && rest[fd][size] != '\n')
+	while (str[size] != '\0')
 		size++;
-	dst = ft_strndup(rest[fd], size + 1);
-	if (!dst)
+	return (size);
+}
+
+size_t	ft_strlcat(char *dst, const char *src, size_t size)
+{
+	size_t	i;
+	size_t	lendst;
+	size_t	lensrc;
+	size_t	rest;
+
+	i = 0;
+	rest = size;
+	while (dst[i] && rest > 0)
+	{
+		rest--;
+		i++;
+	}
+	lendst = ft_strlen(dst);
+	lensrc = ft_strlen(src);
+	if (rest == 0)
+		return (lensrc + size);
+	i = 0;
+	while (rest > 1 && src[i] != '\0')
+	{
+		dst[(lendst + i)] = src[i];
+		rest--;
+		i++;
+	}
+	dst[(lendst + i)] = '\0';
+	return (lendst + lensrc);
+}
+
+char	*ft_strnjoin(char const *s1, char const *s2, int i)
+{
+	size_t	len;
+	size_t	lens1;
+	int		j;
+	char	*nstr;
+
+	j = 0;
+	if (!s1 || !s2)
+		return (NULL);
+	lens1 = ft_strlen(s1);
+	len = lens1 + i + 1;
+	nstr = malloc(sizeof(char) * len);
+	if (!nstr)
+		return (NULL);
+	nstr[0] = '\0';
+	ft_strlcat(nstr, s1, len);
+	while (j != i)
+	{
+		nstr[lens1] = s2[j];
+		lens1++;
+		j++;
+	}
+	free((void *)s1);
+	nstr[lens1] = '\0';
+	return (nstr);
+}
+
+char	*ft_strndup(char *src, size_t size)
+{
+	size_t	i;
+	char	*dest;
+
+	i = 0;
+	if (!src[0])
 		return (0);
-	rest[fd] = ft_fdover(rest[fd], size);
-	return (dst);
+	dest = malloc(sizeof(char) * size + 1);
+	if (dest == NULL)
+		return (NULL);
+	while (src[i] && i < size && src[i] != '\n')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	if (src[i])
+	{
+		dest[i] = '\n';
+		++i;
+	}
+	dest[i] = '\0';
+	return (dest);
+}
+
+int	ft_strchr(const char *s, int c)
+{
+	int				i;
+	unsigned char	*str;
+	unsigned char	uc;
+
+	str = (unsigned char *)s;
+	uc = (unsigned char)c;
+	i = 0;
+	if (!s)
+		return (0);
+	while (str[i] != '\0')
+	{
+		if (str[i] == uc)
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 // #include <stdio.h>
